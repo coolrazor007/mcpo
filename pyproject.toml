@@ -13,6 +13,10 @@ dependencies = [
     "mcp>=1.6.0",
     "typer>=0.15.2",
     "uvicorn>=0.34.0",
+    "uv>=0.1.25",
+    "mcp-server-time>=0.6.2",
+    "mcp-server-fetch>=0.5.6",
+    "npm>=0.1.1",
 ]
 
 [project.scripts]

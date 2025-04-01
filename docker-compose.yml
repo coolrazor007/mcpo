@@ -1,0 +1,35 @@
+services:
+  mcpo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      # For development, mount the source code
+      - ./src:/app/src
+      # Mount config file if needed
+      - ${CONFIG_FILE:-./config.json}:/app/config.json
+      # Docker-in-Docker volumes
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKER_CONFIG:-~/.docker}:/home/mcpo/.docker
+    privileged: true
+    environment:
+      - MCP_HOST=${MCP_HOST:-0.0.0.0}
+      - MCP_PORT=${MCP_PORT:-8000}
+      - MCP_SERVER_NAME=${MCP_SERVER_NAME:-MCP OpenAPI Proxy}
+      - MCP_SERVER_DESCRIPTION=${MCP_SERVER_DESCRIPTION:-Automatically generated API from MCP Tool Schemas}
+      # Add any additional environment variables needed by your MCP server
+    command: >
+      --host ${MCP_HOST:-0.0.0.0} 
+      --port ${MCP_PORT:-8000}
+      --name "${MCP_SERVER_NAME:-MCP OpenAPI Proxy}"
+      --description "${MCP_SERVER_DESCRIPTION:-Automatically generated API from MCP Tool Schemas}"
+      --config ${CONFIG_FILE:-/app/config.json}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
