@@ -127,6 +127,10 @@ async def run(
         lifespan=lifespan,
     )
 
+    @main_app.get("/health")
+    async def health_check():
+        return {"status": "healthy"}
+
     main_app.add_middleware(
         CORSMiddleware,
         allow_origins=cors_allow_origins or ["*"],

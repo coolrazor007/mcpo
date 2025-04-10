@@ -1,5 +1,8 @@
 FROM python:3.12-slim-bookworm
 
+# Create mcpo user and group
+RUN groupadd -r mcpo && useradd -r -g mcpo mcpo
+
 # Install uv (from official binary), nodejs, npm, and git
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -21,10 +24,19 @@ RUN node -v && npm -v
 COPY . /app
 WORKDIR /app
 
+# Set proper ownership
+RUN chown -R mcpo:mcpo /app
+
 # Create virtual environment explicitly in known location
 ENV VIRTUAL_ENV=/app/.venv
-RUN uv venv "$VIRTUAL_ENV"
+RUN uv venv "$VIRTUAL_ENV" && chown -R mcpo:mcpo "$VIRTUAL_ENV"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Create and set permissions for cache directory
+RUN mkdir -p /home/mcpo/.cache && chown -R mcpo:mcpo /home/mcpo
+
+# Switch to mcpo user for installation
+USER mcpo
 
 # Install mcpo (assuming pyproject.toml is properly configured)
 RUN uv pip install . && rm -rf ~/.cache
@@ -32,11 +44,14 @@ RUN uv pip install . && rm -rf ~/.cache
 # Verify mcpo installed correctly
 RUN which mcpo
 
+# Keep running as mcpo user
+USER mcpo
+
 # Expose port (optional but common default)
 EXPOSE 8000
 
 # Entrypoint set for easy container invocation
 ENTRYPOINT ["mcpo"]
 
-# Default help CMD (can override at runtime)
+# Default command will be overridden by docker-compose
 CMD ["--help"]
