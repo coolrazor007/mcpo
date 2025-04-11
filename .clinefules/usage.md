@@ -146,6 +146,22 @@ async function main() {
 }
 ```
 
+## 4. Fetch MCP Server Examples
+
+### Using fetch tool
+```javascript
+// Example using fetch MCP server
+async function fetchExample() {
+  const response = await fetch('http://example.com/api/data', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  return await response.json();
+}
+```
+
 ## Testing Examples
 
 Let's verify these examples work:

@@ -1,4 +1,4 @@
-version: '3.8'
+---
 
 services:
   mcpo:
@@ -8,12 +8,14 @@ services:
       args:
         - BUILDKIT_INLINE_CACHE=1
     container_name: ${CONTAINER_NAME}
-    user: ${CONTAINER_USER}
+    user: root
     ports:
       - "${PORT}:${PORT}"
     volumes:
       - ./config:/app/config:ro
       - ./logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
     environment:
       - PORT=${PORT}
       - API_KEY=${API_KEY}

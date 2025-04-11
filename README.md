@@ -78,10 +78,16 @@ Example config.json:
     "time": {
       "command": "uvx",
       "args": ["mcp-server-time", "--local-timezone=America/New_York"]
+    },
+    "fetch": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/fetch"]
     }
   }
 }
 ```
+
+Note: For MCP tools that provide Docker images, you can simply add them to the config using the `docker run` command. The MCPO server supports Docker-in-Docker, so containerized MCP tools will work automatically.
 
 Each tool will be accessible under its own unique route, e.g.:
 - http://localhost:8000/memory
