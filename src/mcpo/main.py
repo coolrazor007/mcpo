@@ -155,6 +155,8 @@ async def run(
 
         main_app.description += "\n\n- **available tools**："
         for server_name, server_cfg in mcp_servers.items():
+            if server_cfg.get("disabled", False):
+                continue
             sub_app = FastAPI(
                 title=f"{server_name}",
                 description=f"{server_name} MCP Server\n\n- [back to tool list](/docs)",

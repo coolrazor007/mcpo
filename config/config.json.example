@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time", "--local-timezone=America/Los_Angeles"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "fetch": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/fetch"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "duckduckgo": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kouui/web-search-duckduckgo.git@master",
+        "main.py"
+    ],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
