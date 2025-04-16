@@ -10,11 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     ca-certificates \
-    docker.io \
     && rm -rf /var/lib/apt/lists/*
-
-# Add mcpo user to docker group
-RUN usermod -aG docker mcpo
 
 # Install Node.js and npm via NodeSource 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -39,13 +35,17 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # Create and set permissions for cache directory
 RUN mkdir -p /home/mcpo/.cache && chown -R mcpo:mcpo /home/mcpo
 
+# Switch to mcpo user for installation
+USER mcpo
+
 # Install mcpo (assuming pyproject.toml is properly configured)
 RUN uv pip install . && rm -rf ~/.cache
 
 # Verify mcpo installed correctly
 RUN which mcpo
 
-# Switch to mcpo user at runtime via docker-compose
+# Keep running as mcpo user
+USER mcpo
 
 # Expose port (optional but common default)
 EXPOSE 8000
