@@ -1,17 +1,15 @@
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, EmailStr
+import argparse
+from pydantic import EmailStr
 from datetime import datetime
 import os
 import sys
-
 import requests
 import numpy as np
 import weaviate
 from weaviate.classes.init import AdditionalConfig, Timeout
 from weaviate.classes.config import Property, DataType, Configure
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel, EmailStr
-import os
+
+# --- Existing functions: get_weaviate_client, collection_exists, create_collection_handler, etc. ---
 
 def get_weaviate_client():
     weaviate_host = os.environ.get("WEAVIATE_HOST", "localhost")
@@ -81,34 +79,28 @@ def save_core_memory(user_email, core_memory, timestamp):
 # FastAPI app and endpoint remain below
 
 
-app = FastAPI()
+# --- CLI entry point ---
+def main():
+    parser = argparse.ArgumentParser(description="MCP Memory Tool CLI")
+    parser.add_argument("--user_email", required=True, type=str)
+    parser.add_argument("--core_memory", required=True, type=str)
+    parser.add_argument("--timestamp", required=True, type=str)
+    args = parser.parse_args()
 
-# Dummy authentication dependency (replace with real auth in prod)
-def authenticate_user(user_email: str):
-    # In production, validate user session/token and return user info
-    class User:
-        def __init__(self, email):
-            self.email = email
-    return User(user_email)
-
-class SaveCoreMemoryRequest(BaseModel):
-    user_email: EmailStr
-    core_memory: str
-    timestamp: str  # ISO 8601
-
-@app.post("/memory/save_core_memory")
-def save_core_memory_endpoint(
-    req: SaveCoreMemoryRequest,
-    user=Depends(lambda: authenticate_user(req.user_email))
-):
-    if user.email != req.user_email:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    # Optionally validate email
     try:
-        result = save_core_memory(
-            req.user_email,
-            req.core_memory,
-            req.timestamp
-        )
-        return {"status": "success", "detail": result}
+        email = EmailStr(args.user_email)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print({"status": "error", "detail": f"Invalid email: {e}"})
+        sys.exit(1)
+
+    try:
+        result = save_core_memory(args.user_email, args.core_memory, args.timestamp)
+        print({"status": "success", "detail": result})
+        sys.exit(0)
+    except Exception as e:
+        print({"status": "error", "detail": str(e)})
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
