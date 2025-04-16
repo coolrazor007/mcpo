@@ -1,8 +1,5 @@
 FROM python:3.12-slim-bookworm
 
-# Create mcpo user and group
-RUN groupadd -r mcpo && useradd -r -g mcpo mcpo
-
 # Install uv (from official binary), nodejs, npm, and git
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -12,9 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     docker.io \
     && rm -rf /var/lib/apt/lists/*
-
-# Add mcpo user to docker group
-RUN usermod -aG docker mcpo
 
 # Install Node.js and npm via NodeSource 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
@@ -28,12 +22,9 @@ RUN node -v && npm -v
 COPY . /app
 WORKDIR /app
 
-# Set proper ownership
-RUN chown -R mcpo:mcpo /app
-
 # Create virtual environment explicitly in known location
 ENV VIRTUAL_ENV=/app/.venv
-RUN uv venv "$VIRTUAL_ENV" && chown -R mcpo:mcpo "$VIRTUAL_ENV"
+RUN uv venv "$VIRTUAL_ENV"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Create and set permissions for cache directory
