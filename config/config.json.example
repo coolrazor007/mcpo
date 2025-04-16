@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "-e", "WEAVIATE_HOST=host.docker.internal", "-e", "WEAVIATE_PORT=8080", "-e", "OLLAMA_EMBEDDING_URL=http://host.docker.internal:11434/api/embeddings", "-e", "EMBEDDING_MODEL=snowflake-arctic-embed2", "-p", "8082:8082", "mcp-memory"],
       "disabled": false,
       "autoApprove": []
     },
@@ -19,14 +19,10 @@
       "autoApprove": []
     },
     "duckduckgo": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "git+https://github.com/kouui/web-search-duckduckgo.git@master",
-        "main.py"
-    ],
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "ashdev/duckduckgo-mcp-server"],
       "disabled": false,
       "autoApprove": []
-    }
+   }
   }
 }
