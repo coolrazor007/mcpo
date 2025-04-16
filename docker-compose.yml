@@ -23,7 +23,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL}
       - CONFIG_PATH=${CONFIG_PATH}
       - LOG_PATH=${LOG_PATH}
-    command: ["--host", "0.0.0.0", "--port", "${PORT}", "--config", "/app/config/config.json", "--api-key", "${API_KEY}"]
+    command: ["--port", "${PORT}", "--api-key", "${API_KEY}", "--config", "${CONFIG_PATH}"]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]
       interval: 30s

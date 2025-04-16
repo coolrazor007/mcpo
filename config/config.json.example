@@ -2,7 +2,7 @@
   "mcpServers": {
     "memory": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "WEAVIATE_HOST=host.docker.internal", "-e", "WEAVIATE_PORT=8080", "-e", "OLLAMA_EMBEDDING_URL=http://host.docker.internal:11434/api/embeddings", "-e", "EMBEDDING_MODEL=snowflake-arctic-embed2", "-p", "8082:8082", "mcp-memory"],
+      "args": ["run", "-i", "--rm", "-e", "WEAVIATE_HOST=host.docker.internal", "-e", "WEAVIATE_PORT=8080", "-e", "OLLAMA_EMBEDDING_URL=http://host.docker.internal:11434/api/embeddings", "-e", "EMBEDDING_MODEL=snowflake-arctic-embed2", "-p", "8082:8082", "--name", "mcp-memory", "mcp-memory"],
       "disabled": false,
       "autoApprove": []
     },
