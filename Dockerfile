@@ -49,9 +49,3 @@ RUN which mcpo
 
 # Expose port (optional but common default)
 EXPOSE 8000
-
-# Entrypoint set for easy container invocation
-ENTRYPOINT ["mcpo"]
-
-# Default command will be overridden by docker-compose
-CMD ["--help"]
